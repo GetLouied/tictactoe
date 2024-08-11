@@ -1,8 +1,4 @@
 /*** TODO LIST
- * Check for winner after each move, and stop game upon winner or tie
- * Create a Factory function for player creation 
- *  - Player creation
- *  - Keep Track of Score
  * Add a function in the GameBoard to switch between players after turn
  * Add a function in gameboard to getCurrentPlayer
  * Add a Module Pattern for the GameUI
@@ -18,10 +14,20 @@
  ***/
 
 
+let GameUI = (function() {
+
+})();
+
+
 let GameBoard = (function() {
     const rows = 3;
     const columns = 3;
     const board = [];
+    const player1 = 'X';
+    const player2 = 'O';
+
+    // Track the current player
+    let currentPlayer = player1;
 
     // Function to create and reset counters
     function initializeCounters() {
@@ -48,13 +54,22 @@ let GameBoard = (function() {
     }
 
     // Board Move
-    function boardMove(row, column, player) {
+    function boardMove(row, column) {
         if (board[row][column] === null) {
-            board[row][column] = player;
-            console.log(`Player ${player} placed their move in Row: ${row} and Column: ${column}`);
+            board[row][column] = currentPlayer;
+            console.log(`Player ${currentPlayer} placed their move in Row: ${row} and Column: ${column}`);
 
-            updateCounters(row, column, player);
+            updateCounters(row, column, currentPlayer);
 
+            const result = endGameCheck();
+            if (result) {
+                console.log(`Game over! ${result === 'Draw' ? 'It\'s a draw!' : 'Winner: ' + result}`);
+                resetBoard();
+                return;
+            } else {
+                switchPlayer(); 
+            }
+            showBoard();
             return true;
         }
         console.log(`Can only place a move in an empty square`);
@@ -76,35 +91,41 @@ let GameBoard = (function() {
         }
     }
 
-    // Check if there is a winner
+    // Check for a winner
     function endGameCheck() {
         const winLength = 3;
 
-        // Check if any player has won
         for (const [player, counters] of [['X', player1Counters], ['O', player2Counters]]) {
 
-            // Check rows
             if (counters.rows.includes(winLength)) {
                 return player;
             }
 
-            // Check columns
             if (counters.columns.includes(winLength)) {
                 return player;
             }
 
-            // Check diagonals
             if (counters.diagonal1 === winLength || counters.diagonal2 === winLength) {
                 return player;
             }
         }
 
-        // Check for a draw
         if (board.flat().every(cell => cell !== null)) {
             return "Draw";
         }
 
         return null; 
+    }
+
+    // Switch Players
+    function switchPlayer() {
+        currentPlayer = currentPlayer === player1 ? player2 : player1;
+        console.log(`It's now ${currentPlayer}'s turn`);
+    }
+
+    // Get current player
+    function getCurrentPlayer() {
+        return currentPlayer;
     }
 
     // Show board, for console testing use
@@ -117,6 +138,8 @@ let GameBoard = (function() {
         createBoard();
         player1Counters = initializeCounters();
         player2Counters = initializeCounters();
+        currentPlayer = player1; // Reset to player X
+        console.log('The board has been reset.')
     }
 
     createBoard();
@@ -126,5 +149,8 @@ let GameBoard = (function() {
         endGameCheck,
         showBoard,
         resetBoard,
+        getCurrentPlayer,
+
     };
 })();
+
