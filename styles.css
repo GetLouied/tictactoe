@@ -3,3 +3,61 @@
     padding: 0;
     font-family: "Permanent Marker", cursive;
 }
+
+body{
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#title {
+    font-size: 80px;
+}
+
+#game-container {
+    background: url("./images/paper.jpg");
+    border: 1px solid lightgray;
+
+    display: grid;
+    grid-template-rows: 150px 150px 150px;
+    grid-template-columns: 150px 150px 150px;
+}
+
+.cell {
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 8rem;
+}
+
+.cell:hover {
+    color: red;
+}
+
+#display-container {
+    display: flex;
+    justify-content: space-between;
+    width: 450px;
+    margin-top: 20px;
+}
+
+#display {
+    font-size: 22px;
+}
+
+#resetBtn {
+    padding: 5px 20px;
+    border: none;
+    background-color: transparent;
+    font-size: 22px;
+}
+
+#resetBtn:hover {
+    transform: rotate(6deg);
+    color: red;
+}

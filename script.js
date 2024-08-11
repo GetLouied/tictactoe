@@ -1,6 +1,4 @@
 /*** TODO LIST
- * Add a function in the GameBoard to switch between players after turn
- * Add a function in gameboard to getCurrentPlayer
  * Add a Module Pattern for the GameUI
  *  - Beofre hand I need to build the UI via HTML / CSS
  *  - Start with empty grid (class = empty)
@@ -9,12 +7,24 @@
  *  - Counter display for How many wins a player has X or O
  *  - Display messaage after win or tie and prompt for board reset
  *  - Include baord reset button in UI to start game over
+ * 
  * Add a Module patter for gamecontroller that resets board & UI
  * 
  ***/
 
 
 let GameUI = (function() {
+    const cells = Array.from(document.getElementsByClassName('cell'))
+
+    function fillCell () {
+        cells.forEach(cell => {
+            cell.addEventListener('click', () => {
+                cell.textContent = 'X'
+            });
+        });
+    }
+
+
 
 })();
 
