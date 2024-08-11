@@ -1,3 +1,23 @@
+/*** TODO LIST
+ * Check for winner after each move, and stop game upon winner or tie
+ * Create a Factory function for player creation 
+ *  - Player creation
+ *  - Keep Track of Score
+ * Add a function in the GameBoard to switch between players after turn
+ * Add a function in gameboard to getCurrentPlayer
+ * Add a Module Pattern for the GameUI
+ *  - Beofre hand I need to build the UI via HTML / CSS
+ *  - Start with empty grid (class = empty)
+ *  - Upon user click, grid changes to class=Xplayer or class=Oplayer)
+ *  - Upon user click it also changes innerText to X or O. 
+ *  - Counter display for How many wins a player has X or O
+ *  - Display messaage after win or tie and prompt for board reset
+ *  - Include baord reset button in UI to start game over
+ * Add a Module patter for gamecontroller that resets board & UI
+ * 
+ ***/
+
+
 let GameBoard = (function() {
     const rows = 3;
     const columns = 3;
@@ -62,7 +82,7 @@ let GameBoard = (function() {
 
         // Check if any player has won
         for (const [player, counters] of [['X', player1Counters], ['O', player2Counters]]) {
-            
+
             // Check rows
             if (counters.rows.includes(winLength)) {
                 return player;
