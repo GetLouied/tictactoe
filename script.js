@@ -51,15 +51,8 @@ let GameUI = (function() {
         display.textContent = `Player ${currentPlayer}'s Turn`;
     }
 
-    function resetBoard() {
-        cells.forEach(cell => cell.textContent = '');
-        GameBoard.resetBoard(); 
-        updateDisplay(); 
-    }
-    
-    
-
     initialize();
+
 })();
 
 
