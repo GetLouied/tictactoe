@@ -1,32 +1,67 @@
-/*** TODO LIST
- * Add a Module Pattern for the GameUI
- *  - Beofre hand I need to build the UI via HTML / CSS
- *  - Start with empty grid (class = empty)
- *  - Upon user click, grid changes to class=Xplayer or class=Oplayer)
- *  - Upon user click it also changes innerText to X or O. 
- *  - Counter display for How many wins a player has X or O
- *  - Display messaage after win or tie and prompt for board reset
- *  - Include baord reset button in UI to start game over
- * 
- * Add a Module patter for gamecontroller that resets board & UI
- * 
- ***/
-
-
 let GameUI = (function() {
-    const cells = Array.from(document.getElementsByClassName('cell'))
+    const cells = Array.from(document.getElementsByClassName('cell'));
+    const resetButton = document.getElementById('resetBtn');
+    const display = document.getElementById('display');
+    const playAgainButton = document.getElementById('playAgainBtn');
 
-    function fillCell () {
-        cells.forEach(cell => {
-            cell.addEventListener('click', () => {
-                cell.textContent = 'X'
-            });
+    function initialize() {
+        cells.forEach((cell, index) => {
+            cell.addEventListener('click', () => handleCellClick(cell, index));
         });
+    
+        resetButton.addEventListener('click', resetGame);
+        setupPlayAgainButton(); 
     }
 
+    function handleCellClick(cell, index) {
+        if (cell.textContent === '' && !GameBoard.isGameOver()) {
+            const currentPlayer = GameBoard.getCurrentPlayer();
+            cell.textContent = currentPlayer; 
+            const row = Math.floor(index / 3);
+            const col = index % 3;
+    
+            const moveSuccessful = GameBoard.boardMove(row, col); 
+            if (!moveSuccessful) return; 
+    
+            const result = GameBoard.endGameCheck(); 
+            if (result) {
+                display.textContent = result === 'Draw' ? "It's a draw! Click 'Play Again' to start a new game." : `Winner: ${result}! Click 'Play Again' to start a new game.`;
+                playAgainButton.style.display = 'block'; 
+            } else {
+                GameBoard.switchPlayer(); 
+                updateDisplay(); 
+            }
+        }
+    }
+    
+    
+    function setupPlayAgainButton() {
+        playAgainButton.addEventListener('click', resetGame);
+    }
+    
+    function resetGame() {
+        cells.forEach(cell => cell.textContent = '');
+        GameBoard.resetBoard();
+        updateDisplay();
+        playAgainButton.style.display = 'none'; 
+    }
+    
+    function updateDisplay() {
+        const currentPlayer = GameBoard.getCurrentPlayer();
+        display.textContent = `Player ${currentPlayer}'s Turn`;
+    }
 
+    function resetBoard() {
+        cells.forEach(cell => cell.textContent = '');
+        GameBoard.resetBoard(); 
+        updateDisplay(); 
+    }
+    
+    
 
+    initialize();
 })();
+
 
 
 let GameBoard = (function() {
@@ -35,11 +70,10 @@ let GameBoard = (function() {
     const board = [];
     const player1 = 'X';
     const player2 = 'O';
+    let gameOver = false;
 
-    // Track the current player
     let currentPlayer = player1;
 
-    // Function to create and reset counters
     function initializeCounters() {
         return {
             rows: Array(rows).fill(0),
@@ -49,11 +83,9 @@ let GameBoard = (function() {
         };
     }
 
-    // Track counters for each player
     let player1Counters = initializeCounters();
     let player2Counters = initializeCounters();
 
-    // Board Creation
     function createBoard() {
         for (let i = 0; i < rows; i++) {
             board[i] = [];
@@ -63,30 +95,25 @@ let GameBoard = (function() {
         }
     }
 
-    // Board Move
     function boardMove(row, column) {
         if (board[row][column] === null) {
             board[row][column] = currentPlayer;
             console.log(`Player ${currentPlayer} placed their move in Row: ${row} and Column: ${column}`);
-
+    
             updateCounters(row, column, currentPlayer);
-
+            showBoard();
+    
             const result = endGameCheck();
             if (result) {
-                console.log(`Game over! ${result === 'Draw' ? 'It\'s a draw!' : 'Winner: ' + result}`);
-                resetBoard();
-                return;
-            } else {
-                switchPlayer(); 
+                gameOver = true; 
             }
-            showBoard();
-            return true;
+    
+            return true; 
         }
         console.log(`Can only place a move in an empty square`);
-        return false;
+        return false; 
     }
 
-    // Update counters for the player
     function updateCounters(row, column, player) {
         const counters = player === 'X' ? player1Counters : player2Counters;
 
@@ -101,12 +128,10 @@ let GameBoard = (function() {
         }
     }
 
-    // Check for a winner
     function endGameCheck() {
         const winLength = 3;
 
         for (const [player, counters] of [['X', player1Counters], ['O', player2Counters]]) {
-
             if (counters.rows.includes(winLength)) {
                 return player;
             }
@@ -127,30 +152,32 @@ let GameBoard = (function() {
         return null; 
     }
 
-    // Switch Players
     function switchPlayer() {
         currentPlayer = currentPlayer === player1 ? player2 : player1;
         console.log(`It's now ${currentPlayer}'s turn`);
     }
 
-    // Get current player
     function getCurrentPlayer() {
         return currentPlayer;
     }
 
-    // Show board, for console testing use
     function showBoard() {
         console.log(board);
     }
 
-    // Reset Gameboard
+    function isGameOver() {
+        return gameOver;
+    }
+
     function resetBoard() {
         createBoard();
         player1Counters = initializeCounters();
         player2Counters = initializeCounters();
-        currentPlayer = player1; // Reset to player X
+        currentPlayer = player1; 
+        gameOver = false; 
         console.log('The board has been reset.')
     }
+    
 
     createBoard();
 
@@ -160,7 +187,9 @@ let GameBoard = (function() {
         showBoard,
         resetBoard,
         getCurrentPlayer,
-
+        switchPlayer,
+        isGameOver,
     };
 })();
+
 

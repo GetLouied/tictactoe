@@ -5,7 +5,7 @@
 }
 
 body{
-    height: 100vh;
+    height: 90vh;
 
     display: flex;
     flex-direction: column;
@@ -37,6 +37,7 @@ body{
 
 .cell:hover {
     color: red;
+    cursor: pointer;
 }
 
 #display-container {
@@ -50,14 +51,16 @@ body{
     font-size: 22px;
 }
 
-#resetBtn {
+#resetBtn,
+#playAgainBtn {
     padding: 5px 20px;
     border: none;
     background-color: transparent;
     font-size: 22px;
 }
 
-#resetBtn:hover {
+#resetBtn:hover,
+#playAgainBtn:hover {
     transform: rotate(6deg);
     color: red;
 }
